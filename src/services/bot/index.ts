@@ -42,9 +42,13 @@ export default class BotService {
                 id: user,
                 stage: 0
             };
+        } else {
+            this.botUsers[user].stage = 0;
         }
-
+        
         await ctx.reply("Привет!\nЯ помогу тебе подготовиться к предстоящему собеседованию!\nПриступим?");
+
+
     }
 
     getUser = (id: number): BotUser => {

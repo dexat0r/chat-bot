@@ -14,13 +14,6 @@
   dependencies:
     "@cspotcode/source-map-consumer" "0.8.0"
 
-"@rauschma/stringio@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@rauschma/stringio/-/stringio-1.4.0.tgz#0b667bea726652a10a48dfc1dadc89e0ec51e269"
-  integrity sha512-3uor2f/MXZkmX5RJf8r+OC3WvZVzpSme0yyL0rQDPEnatE02qRcqwEwnsgpgriEck0S/n4vWtUd6tTtrJwk45Q==
-  dependencies:
-    "@types/node" "^10.0.3"
-
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
@@ -53,15 +46,10 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.2.tgz#423c77877d0569db20e1fc80885ac4118314010e"
   integrity sha512-eZxlbI8GZscaGS7kkc/trHTT5xgrjH3/1n2JDwusC9iahPKWMRvRjJSAN5mCXviuTGQ/lHnhvv8Q1YTpnfz9gA==
 
-"@types/node@^10.0.3":
-  version "10.17.60"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.60.tgz#35f3d6213daed95da7f0f73e75bcc6980e90597b"
-  integrity sha512-F0KIgDJfy2nA3zMLmWGKxcH2ZVEtCZXHHdOQs2gSaQ27+lNeEfGxzkIw90aXswATX7AZ33tahPbzy6KAfUreVw==
-
-"@types/node@^16.4.13":
-  version "16.11.21"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.21.tgz#474d7589a30afcf5291f59bd49cca9ad171ffde4"
-  integrity sha512-Pf8M1XD9i1ksZEcCP8vuSNwooJ/bZapNmIzpmsMaL+jMI+8mEYU3PKvs+xDNuQcJWF/x24WzY4qxLtB0zNow9A==
+"@types/node@^17.0.12":
+  version "17.0.12"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.12.tgz#f7aa331b27f08244888c47b7df126184bc2339c5"
+  integrity sha512-4YpbAsnJXWYK/fpTVFlMIcUIho2AYCi4wg5aNPrG1ng7fn/1/RZfCIpRCiBX+12RVa34RluilnvCqD+g3KiSiA==
 
 abbrev@1:
   version "1.1.1"
@@ -608,14 +596,6 @@ node-fetch@^2.6.6:
   integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
   dependencies:
     whatwg-url "^5.0.0"
-
-node-ts@^5.1.2:
-  version "5.1.2"
-  resolved "https://registry.yarnpkg.com/node-ts/-/node-ts-5.1.2.tgz#4e1fa51e87506e042c7ea2b1e465684a79532274"
-  integrity sha512-ihRzS31ZbknFzXFkF4j9R3HJV1cRPTjyYzeRaEFyXv5DhWKGD+QNTJ+My5WiOc0kozEPjwRBsKh+g92hPyTNnQ==
-  dependencies:
-    "@rauschma/stringio" "^1.4.0"
-    "@types/node" "^16.4.13"
 
 nodemon@^2.0.15:
   version "2.0.15"
