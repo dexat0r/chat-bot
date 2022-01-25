@@ -44,6 +44,7 @@ export default class BotService {
             };
         } else {
             this.botUsers[user].stage = 0;
+            console.log(this.botUsers[user].stage)
         }
         
         await ctx.reply("Привет!\nЯ помогу тебе подготовиться к предстоящему собеседованию!\nПриступим?");
