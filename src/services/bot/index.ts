@@ -36,7 +36,6 @@ export default class BotService {
 
     startWork = async (ctx: Context): Promise<void> => {
         let user = ctx.from?.id as number;
-
         if (!this.botUsers[user]) {
             this.botUsers[user] = {
                 id: user,
@@ -44,7 +43,6 @@ export default class BotService {
             };
         } else {
             this.botUsers[user].stage = 0;
-            console.log(this.botUsers[user].stage)
         }
         
         await ctx.reply("Привет!\nЯ помогу тебе подготовиться к предстоящему собеседованию!\nПриступим?");
