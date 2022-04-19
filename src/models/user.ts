@@ -10,6 +10,8 @@ export default class User implements BotUser{
     training: boolean
     extraQuestions: number
     isAnswering: boolean
+    badSpelling: boolean
+    extraQuestionsArr: number[]
 
     constructor(id: number) {
         this.id = id;
@@ -18,8 +20,10 @@ export default class User implements BotUser{
         this.trainingStage = 0;
         this.trainingScore = 0;
         this.training = false;
-        this.extraQuestions = 0;
+        this.extraQuestions = -1;
         this.isAnswering = true;
+        this.badSpelling = false;
+        this.extraQuestionsArr = []
     }
 
 }

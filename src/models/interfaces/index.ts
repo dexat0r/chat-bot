@@ -12,5 +12,7 @@ export interface BotUser {
     trainingStage: number,
     trainingScore: number,
     extraQuestions: number,
-    isAnswering: boolean
+    isAnswering: boolean,
+    badSpelling: boolean,
+    extraQuestionsArr: number[]
 }

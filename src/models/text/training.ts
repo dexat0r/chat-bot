@@ -11,16 +11,16 @@ export default {
                     "добрый день",
                     "доброе утро",
                 ];
-
                 const match = value
                     .toLowerCase()
-                    .match((searchTerms.join("|"), "g"));
+                    .match((searchTerms.join("|").toLowerCase()));
                 return match ? match.length > 0 : false;
             },
         },
         {
             text: "Представьтесь, пожалуйста.",
             validation: (): boolean => {
+
                 return true;
             },
         },
@@ -47,10 +47,53 @@ export default {
                     "магистратура",
                     "аспирантура",
                     "курс",
+                    "курсы",
+                    "закончила",
+                    "закончил",
+                    "ПГУПС",
+                    "государственный",
+                    "РГГУ",
+                    "РГПУ",
+                    "Герцена",
+                    "СПбАУ",
+                    "СПбГУ",
+                    "СПбГПУ",
+                    "СПбГТУРП",
+                    "СПбГУАП",
+                    "СПбГУ ИТМО",
+                    "ЛЭТИ",
+                    "ВШЭ",
+                    "НИУ ВШЭ",
+                    "МГИМО",
+                    "ГУУ",
+                    "ИМТП",
+                    "МАИ",
+                    "МАРХИ",
+                    "МАТИ-РГТУ",
+                    "МГИМО",
+                    "МГИЭТ",
+                    "МГЛУ",
+                    "МГТУ",
+                    "МГУ",
+                    "МГУКИ",
+                    "МГУП",
+                    "МГУПП",
+                    "МГУС",
+                    "МГУТУ",
+                    "МИИГАиК",
+                    "МИФИ",
+                    "МИЭМ",
+                    "МТУСИ",
+                    "МУМ",
+                    "РГГУ",
+                    "РГСУ",
+                    "РУДН",
                 ];
+                console.log((searchTerms.join("|").toLowerCase()))
                 const match = value
                     .toLowerCase()
-                    .match((searchTerms.join("|"), "g"));
+                    .match((searchTerms.join("|").toLowerCase()));
+                console.log(match)
                 return match ? match.length > 0 : false;
             },
         },
@@ -61,12 +104,12 @@ export default {
                     const searchTerms = [
                         "нет",
                         "нету",
-                        "неsбыло",
-                        "неsработал",
+                        "не было",
+                        "не работал",
                     ];
                     const match = value
                         .toLowerCase()
-                        .match((searchTerms.join("|"), "g"));
+                        .match((searchTerms.join("|")));
                     return !Boolean(match);
                 },
             },

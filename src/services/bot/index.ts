@@ -4,8 +4,10 @@ import yes from "../../models/text/agree";
 import no from "../../models/text/disagree";
 import replies from "../../models/text/replies";
 import training from "../../models/text/training";
+import rude from "../../models/text/rudeWords";
 import User from "../../models/user";
 import { BotUsers } from "./interfaces";
+import axios from "axios";
 
 export default class BotService {
     botUsers: BotUsers = {};
@@ -22,6 +24,10 @@ export default class BotService {
     }
 
     startWork = async (ctx: Context): Promise<void> => {
+        let user = ctx.from?.id as number;
+        if (this.botUsers[user]) {
+            this.deleteUser(user);
+        }
         ctx.reply(
             "Привет, выбери команду!",
             Markup.keyboard([["Обучение!", "Тренировка!"]])
@@ -55,6 +61,22 @@ export default class BotService {
         });
     };
 
+    checkRude = (msg: string): boolean => {
+        const str = msg.split(" ");
+
+        for (let word of str) {
+            const exist = rude.find(
+                (el) => el.toLowerCase() == word.toLowerCase()
+            );
+
+            if (exist) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
     startTraining = (ctx: Context) => {
         let id = ctx.from?.id as number;
         let user = this.getUser(id);
@@ -69,7 +91,7 @@ export default class BotService {
         user.trainingScore = 0;
         user.trainingStage = 0;
         user.stage = 0;
-        user.extraQuestions = 0;
+        user.extraQuestions = -1;
 
         ctx.reply(training.start, {
             reply_markup: {
@@ -107,7 +129,21 @@ export default class BotService {
         }
     };
 
-    checkType = (ctx: Context) => {
+    checkSpelling = async (msg: string) => {
+        try {
+            const text = encodeURIComponent(msg);
+            const res = await axios.get(`https://speller.yandex.net/services/spellservice.json/checkText?text=${text}`);
+            if (res.data.length > 0) {
+                return false;
+            }
+            return true;
+        } catch (error) {
+            console.log(error);
+            return true;
+        }
+    }
+
+    checkType = async (ctx: any) => {
         const user = this.getUser(ctx.from?.id as number);
         if (!user) {
             ctx.reply(replies.notFound);
@@ -115,6 +151,14 @@ export default class BotService {
         }
 
         if (user.training) {
+            if (!(await this.checkSpelling(ctx.message.text))){
+                user.badSpelling = true;
+            }
+            if(!this.checkRude(ctx.message?.text)){
+                ctx.reply(training.errors.fuck);
+                this.deleteUser(user.id);
+                return;
+            }
             this.checkTrainingStageAndReply(ctx);
         } else {
             this.checkLearningStageAndReply(ctx);
@@ -165,26 +209,57 @@ export default class BotService {
                 user.trainingStage++;
                 break;
             }
-            case user.extraQuestions < 5: {
+            case user.extraQuestions < 0: {
+                const valid = (
+                    training.stages[user.trainingStage - 1] as any
+                ).validation(ctx.message.text);
+                if (valid) user.trainingScore++;
                 const length = (training.stages[user.trainingStage] as any)
                     .length;
                 const rand = Math.floor(Math.random() * (length - 0) + 0);
+                user.extraQuestionsArr.push(rand);
+                ctx.reply(
+                    (training.stages[user.trainingStage] as any)[rand].text
+                );
+                user.extraQuestions = 1;
+                break;
+            }
+            case user.extraQuestions < 5: {
+                const length = (training.stages[user.trainingStage] as any)
+                    .length;
+                let rand: number;
+                let alreadyAsked = false;
+                do {
+                    rand = Math.floor(Math.random() * (length - 0) + 0);
+                    const exist = user.extraQuestionsArr.find((el) => el == rand);
+                    alreadyAsked = Boolean(exist != undefined);
+                } while (alreadyAsked);
                 const valid = (training.stages[user.trainingStage] as any)[
-                    rand
+                    user.extraQuestionsArr[user.extraQuestionsArr.length - 1]
                 ].validation(ctx.message.text);
                 if (valid) user.trainingScore++;
+                user.extraQuestionsArr.push(rand);
                 ctx.reply(
                     (training.stages[user.trainingStage] as any)[rand].text
                 );
                 user.extraQuestions++;
                 break;
             }
-            case (!user.isAnswering): {
-                switch(this.checkMessage(ctx.message.text)) {
+            case !user.isAnswering: {
+                switch (this.checkMessage(ctx.message.text)) {
                     case true: {
                         const marks = Object.keys(training.results);
-                        const result = marks.filter((mark) => user.trainingScore > Number(mark));
-                        await ctx.reply((training.results as any)[result[result.length - 1]]);
+                        const result = marks.filter(
+                            (mark) => user.trainingScore >= Number(mark)
+                        );
+                        
+                        if (user.badSpelling) {
+                            await ctx.reply(training.errors.grammar);
+                        } else {
+                            await ctx.reply(
+                                (training.results as any)[result[result.length - 1]]
+                            );
+                        }
                         this.deleteUser(user.id);
                         //left text
                         break;
@@ -206,7 +281,6 @@ export default class BotService {
                 ctx.reply(training.finish);
             }
         }
-
     };
 
     checkLearningStageAndReply = async (ctx: any): Promise<void> => {
@@ -258,7 +332,4 @@ export default class BotService {
         await this.bot.launch();
     };
 
-    training = async () => {
-        const data = {};
-    };
 }
