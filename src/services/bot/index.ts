@@ -29,7 +29,7 @@ export default class BotService {
             this.deleteUser(user);
         }
         ctx.reply(
-            "Привет, выбери команду!",
+            "Привет, выбери команду в меню!",
             Markup.keyboard([["Обучение!", "Тренировка!"]])
                 .oneTime()
                 .resize()
@@ -166,9 +166,20 @@ export default class BotService {
     };
 
     checkMessage = (msg: any): boolean | null => {
-        let answY =
-            this.botYes.find((value) => value == msg.toLowerCase()) && 1;
+        const splitmessage = msg.split(" ");
+        
+        let answY = this.botYes.find((value) => value == msg.toLowerCase()) && 1;;
         let answN = this.botNo.find((value) => value == msg.toLowerCase()) && 1;
+
+        if (!answY && !answN) {
+            for (const word of splitmessage) {
+                const cuttedWord = word.replace(/[\s.,]/g, '');
+                answY =
+                    this.botYes.find((value) => value == cuttedWord.toLowerCase()) && 1;
+                answN = this.botNo.find((value) => value == cuttedWord.toLowerCase()) && 1;
+                if (answY || answN) break;
+            }
+        }
 
         return answY ? true : answN ? false : null;
     };
@@ -193,7 +204,15 @@ export default class BotService {
                     return;
                 }
                 case null: {
-                    ctx.reply(replies.notUnderstood);
+                    await ctx.reply(replies.notUnderstood);
+                    user.stage == 0 ? await ctx.reply(training.start, {
+                        reply_markup: {
+                            inline_keyboard: [
+                                [Markup.button.callback("Выйти", "exitTraining")],
+                            ],
+                        },
+                    }) :
+                    await ctx.reply(training.stages[(user.stage - 1) as 0 | 1 | 2 | 3 | 4]);
                     return;
                 }
             }
@@ -311,7 +330,15 @@ export default class BotService {
                 break;
             }
             case null: {
-                ctx.reply(replies.notUnderstood);
+                await ctx.reply(replies.notUnderstood);
+                user.stage == 0 ? await ctx.reply(replies.start, {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [Markup.button.callback("Выйти", "exitLearning")],
+                        ],
+                    },
+                }) :
+                await ctx.reply(replies.stages[(user.stage - 1) as 0 | 1 | 2 | 3 | 4]);
                 break;
             }
         }
