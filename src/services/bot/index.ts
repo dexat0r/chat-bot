@@ -68,7 +68,7 @@ export default class BotService {
 
         for (let word of str) {
             const exist = rude.find(
-                (el) => el.toLowerCase().replace(/[\s.,]/g, '') == word.toLowerCase()
+                (el) => el.toLowerCase().replace(/[\s.,!]/g, '') == word.toLowerCase()
             );
 
             if (exist) {
@@ -177,7 +177,7 @@ export default class BotService {
 
         if (!answY && !answN) {
             for (const word of splitmessage) {
-                const cuttedWord = word.replace(/[\s.,]/g, '');
+                const cuttedWord = word.replace(/[\s.,!]/g, '');
                 answY =
                     this.botYes.find((value) => value == cuttedWord.toLowerCase()) && 1;
                 answN = this.botNo.find((value) => value == cuttedWord.toLowerCase()) && 1;
