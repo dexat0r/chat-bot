@@ -45,20 +45,22 @@ export default class BotService {
             return;
         }
 
-        ctx.reply(replies.start, {
-            reply_markup: {
-                inline_keyboard: [
-                    [Markup.button.callback("Выйти", "exitLearning")],
-                ],
-            },
-        });
+        // ctx.reply(replies.start, {
+        //     reply_markup: {
+        //         inline_keyboard: [
+        //             [Markup.button.callback("Выйти", "exitLearning")],
+        //         ],
+        //     },
+        // });
 
-        this.bot.action("exitLearning", async (_ctx) => {
-            _ctx.answerCbQuery();
-            this.deleteUser(_ctx.from.id);
-            this.startWork(_ctx);
-            return true;
-        });
+        ctx.reply(replies.start);
+
+        // this.bot.action("exitLearning", async (_ctx) => {
+        //     _ctx.answerCbQuery();
+        //     this.deleteUser(_ctx.from.id);
+        //     this.startWork(_ctx);
+        //     return true;
+        // });
     };
 
     checkRude = (msg: string): boolean => {
@@ -66,7 +68,7 @@ export default class BotService {
 
         for (let word of str) {
             const exist = rude.find(
-                (el) => el.toLowerCase() == word.toLowerCase()
+                (el) => el.toLowerCase().replace(/[\s.,]/g, '') == word.toLowerCase()
             );
 
             if (exist) {
@@ -93,20 +95,22 @@ export default class BotService {
         user.stage = 0;
         user.extraQuestions = -1;
 
-        ctx.reply(training.start, {
-            reply_markup: {
-                inline_keyboard: [
-                    [Markup.button.callback("Выйти", "exitTraining")],
-                ],
-            },
-        });
+        // ctx.reply(training.start, {
+        //     reply_markup: {
+        //         inline_keyboard: [
+        //             [Markup.button.callback("Выйти", "exitTraining")],
+        //         ],
+        //     },
+        // });
 
-        this.bot.action("exitTraining", async (_ctx) => {
-            _ctx.answerCbQuery();
-            this.deleteUser(_ctx.from.id);
-            this.startWork(_ctx);
-            return true;
-        });
+        ctx.reply(training.start);
+
+        // this.bot.action("exitTraining", async (_ctx) => {
+        //     _ctx.answerCbQuery();
+        //     this.deleteUser(_ctx.from.id);
+        //     this.startWork(_ctx);
+        //     return true;
+        // });
     };
 
     getUser = (id: number): User => {
@@ -114,7 +118,7 @@ export default class BotService {
     };
 
     updateUserStage = (id: number, stage: Stage): void => {
-        if (stage < 7) {
+        if (stage < 8) {
             this.botUsers[id].stage = stage;
         }
     };
@@ -205,13 +209,7 @@ export default class BotService {
                 }
                 case null: {
                     await ctx.reply(replies.notUnderstood);
-                    user.stage == 0 ? await ctx.reply(training.start, {
-                        reply_markup: {
-                            inline_keyboard: [
-                                [Markup.button.callback("Выйти", "exitTraining")],
-                            ],
-                        },
-                    }) :
+                    user.stage == 0 ? await ctx.reply(training.start) :
                     await ctx.reply(training.stages[(user.stage - 1) as 0 | 1 | 2 | 3 | 4]);
                     return;
                 }
@@ -309,6 +307,19 @@ export default class BotService {
             return;
         }
 
+        if(!this.checkRude(ctx.message?.text)){
+            await ctx.reply(replies.fuck);
+
+            if (user.stage > 0) {
+                user.stage--;
+                await ctx.reply(replies.stages[user.stage as Stage]);
+            } else {
+                user.stage = 0;
+                await ctx.reply(replies.start);
+            }
+            return;
+        }
+
         switch (this.checkMessage(ctx.message.text)) {
             case true: {
                 if (user.pause) {
@@ -331,13 +342,7 @@ export default class BotService {
             }
             case null: {
                 await ctx.reply(replies.notUnderstood);
-                user.stage == 0 ? await ctx.reply(replies.start, {
-                    reply_markup: {
-                        inline_keyboard: [
-                            [Markup.button.callback("Выйти", "exitLearning")],
-                        ],
-                    },
-                }) :
+                user.stage == 0 ? await ctx.reply(replies.start) :
                 await ctx.reply(replies.stages[(user.stage - 1) as 0 | 1 | 2 | 3 | 4]);
                 break;
             }
